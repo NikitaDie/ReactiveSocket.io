@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using ReactiveSocketIO.Core.Message;
 
-namespace MessengerProtocolRealization.Message;
+namespace ReactiveSocketIO.BaseImplementation.Message;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")] 
 public class MessageBuilder : IMessageBuilder

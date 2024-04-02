@@ -1,4 +1,4 @@
-﻿using MessengerProtocolRealization.Message;
+﻿using ReactiveSocketIO.BaseImplementation.Message;
 using ReactiveSocketIO.BaseImplementation.Transport;
 using ReactiveSocketIO.Core;
 using ReactiveSocketIO.Core.Payload;

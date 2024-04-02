@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using MessengerProtocolRealization.Message;
+using ReactiveSocketIO.BaseImplementation.Message;
 using ReactiveSocketIO.Core;
 using ReactiveSocketIO.Core.Message;
 
