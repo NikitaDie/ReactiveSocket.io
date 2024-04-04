@@ -1,4 +1,6 @@
-﻿namespace ReactiveSocketIO;
+﻿using System.Diagnostics;
+
+namespace ReactiveSocketIO.Core.Helpers;
 
 public static class Extensions
 {
@@ -18,5 +20,12 @@ public static class Extensions
             Array.Reverse(intBytes);
 
         return intBytes;
+    }
+
+    public static string? GetMethodName()
+    {
+        StackTrace stackTrace = new StackTrace();
+        string? methodName = stackTrace.GetFrame(1)?.GetMethod()?.Name;
+        return methodName;
     }
 }

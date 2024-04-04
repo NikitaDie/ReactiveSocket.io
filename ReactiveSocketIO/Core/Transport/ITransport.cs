@@ -1,6 +1,6 @@
 ﻿using ReactiveSocketIO.Core.Message;
 
-namespace ReactiveSocketIO.Core;
+namespace ReactiveSocketIO.Core.Transport;
 
 public interface ITransport : IDisposable
 {

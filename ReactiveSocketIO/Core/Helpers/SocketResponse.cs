@@ -1,8 +1,7 @@
-﻿using System.Net.Sockets;
-using ReactiveSocketIO.Core.Message;
+﻿using ReactiveSocketIO.Core.Message;
 using ReactiveSocketIO.Core.Payload;
 
-namespace ReactiveSocketIO.Core;
+namespace ReactiveSocketIO.Core.Helpers;
 
 public class SocketResponse
 {

@@ -1,8 +1,9 @@
 ﻿using ReactiveSocketIO.BaseImplementation.Message;
 using ReactiveSocketIO.BaseImplementation.Transport;
-using ReactiveSocketIO.Core;
+using ReactiveSocketIO.Core.Helpers;
 using ReactiveSocketIO.Core.Payload;
 using ReactiveSocketIO.Core.Message;
+using ReactiveSocketIO.Core.Transport;
 
 namespace ReactiveSocketIO;
 

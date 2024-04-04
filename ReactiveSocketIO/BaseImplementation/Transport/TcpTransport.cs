@@ -2,8 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using ReactiveSocketIO.BaseImplementation.Message;
-using ReactiveSocketIO.Core;
+using ReactiveSocketIO.Core.Helpers;
 using ReactiveSocketIO.Core.Message;
+using ReactiveSocketIO.Core.Transport;
 
 namespace ReactiveSocketIO.BaseImplementation.Transport;
 
@@ -85,19 +86,20 @@ public class TcpTransport : ITransport
  
     private void ReceiveLoop()
     {
-        try
+        while (!_cancellationSource.Token.IsCancellationRequested)
         {
-            while (!_cancellationSource.Token.IsCancellationRequested)
+            Debug.Assert(_netStream != null, nameof(_netStream) + " != null");
+            MemoryStream packet = GetPacket(_netStream);
+            IMessage message = MessageBuilder.GetProtoMessage(packet);
+            packet.Close();
+            try
             {
-                Debug.Assert(_netStream != null, nameof(_netStream) + " != null");
-                MemoryStream packet = GetPacket(_netStream);
-                IMessage message = MessageBuilder.GetProtoMessage(packet);
                 OnReceived?.Invoke(message);
             }
-        }
-        catch (Exception ex)
-        {
-            OnError?.Invoke(ex);
+            catch (Exception ex)
+            {
+                OnError?.Invoke(ex);
+            }
         }
     }
     

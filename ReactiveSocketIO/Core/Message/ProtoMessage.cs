@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using ReactiveSocketIO.Core.Helpers;
 using ReactiveSocketIO.Core.Payload;
 
 namespace ReactiveSocketIO.Core.Message
@@ -17,7 +18,7 @@ namespace ReactiveSocketIO.Core.Message
         public const string HEADER_PAYLOAD_LEN = "len";
         public const string PAYLOAD_SEPARATOR = "--payload";
         
-        public string Event { get; set; }
+        public string? Event { get; set; }
         public MessageType Type { get; set; }
         public int Id { get; set; }
         public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
@@ -100,45 +101,38 @@ namespace ReactiveSocketIO.Core.Message
             where T : IReversable
         {
             if (index >= PayloadCount)
-                throw new Exception("Index "); //TODO: 
-
-            try
-            {
-                // Get the type of T
-                Type currentType = typeof(T);
+                throw new ReactiveSocketIoException("Index of Payload is out of range!", Extensions.GetMethodName(), new IndexOutOfRangeException());
+            
+            // Get the type of T
+            Type? currentType = typeof(T);
                 
-                // Loop through the inheritance hierarchy
-                while (currentType != null)
+            // Loop through the inheritance hierarchy
+            while (currentType != null)
+            {
+                // Look for the GetObj method in the current type
+                MethodInfo? method = currentType.GetMethod("GetObj", BindingFlags.Public | BindingFlags.Static);
+
+                if (method != null)
                 {
-                    // Look for the GetObj method in the current type
-                    MethodInfo? method = currentType.GetMethod("GetObj", BindingFlags.Public | BindingFlags.Static);
-
-                    if (method != null)
-                    {
-                        MethodInfo genericMethod = method.MakeGenericMethod(typeof(T));
-                        MemoryStream pStream = PayloadsInfo[index].Stream;
-                        return (T)genericMethod.Invoke(null, new object[] { pStream });
-                    }
-
-                    // Move to the base type for next iteration
-                    currentType = currentType.BaseType;
+                    MethodInfo genericMethod = method.MakeGenericMethod(typeof(T));
+                    MemoryStream pStream = PayloadsInfo[index].Stream;
+                    return (T)genericMethod.Invoke(null, new object[] { pStream });
                 }
 
-                // If not found in any ancestor, throw an exception
-                throw new Exception($"Type '{typeof(T)}' or its ancestors do not have a public static 'GetObj' method");
-            
+                // Move to the base type for next iteration
+                currentType = currentType.BaseType;
             }
-            catch (Exception ex)
-            {
-                //TODO:
-                throw new Exception();
-            }
+
+            // If not found in any ancestor, throw an exception
+            throw new ReactiveSocketIoException(
+                $"Type '{typeof(T)}' or its ancestors do not have a public static 'GetObj' method!",
+                Extensions.GetMethodName());
         }
 
-        public string? GetPayloadType(int index)
+        public string GetPayloadType(int index)
         {
             if (index >= PayloadCount)
-                throw new Exception("Index "); //TODO: 
+                throw new ReactiveSocketIoException("Index of Payload is out of range!", Extensions.GetMethodName(), new IndexOutOfRangeException());
             
             return PayloadsInfo[index].Type;
         }
